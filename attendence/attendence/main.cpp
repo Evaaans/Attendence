@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -10,10 +11,10 @@ struct date_time
     int yy;
     int mm;
     int dd;
-    int hh;
-    int mm;
-    int ss;
-    int ww;
+    int hour;
+    int min;
+    int sec;
+    int weeknum;
 };
 
 struct excption_record
@@ -49,8 +50,11 @@ ofstream fout;
 vector<vacation_record> vacations;
 vector<excption_record> excptions;
 
+// 按分隔符拆分到字符串数组
 void splitBuf(string buf, vector<string> &part)
 {
+    if (buf.length() < 1) return;
+
     unsigned long found = buf.find(',');
 
     while (found != string::npos)
@@ -65,6 +69,24 @@ void splitBuf(string buf, vector<string> &part)
     for (int i = 0; i < part.size(); i++) cout << i << "\"" << part[i] << "\"" << endl;
 }
 
+// 拆分小时数
+double splitPeriod(string buf)
+{
+    if (buf.length() < 1) return 0;
+
+    unsigned long found = buf.find(' ');
+    cout << "@@@@@@@@@@@@@" << atof(buf.substr(0, found).c_str()) << endl;
+    return atof(buf.substr(0, found).c_str());
+}
+
+// 拆分日期或时间
+date_time splitDateTime(string buf, string pattern)
+{
+    date_time rtn;
+
+    return rtn;
+}
+
 void add_vacation(string buf)
 {
     if (buf.length() < 1) return;
@@ -76,13 +98,13 @@ void add_vacation(string buf)
     
     new_one.department = part[1];
     new_one.name = part[2];
-    new_one.apply_time = part[3];
-    new_one.period = part[4];
-    new_one.from = part[5];
-    new_one.to = part[6];
+    new_one.apply_time = splitDateTime(part[3], "yyyy/mm/dd hour:min");
+    new_one.period = splitPeriod(part[4]);
+    new_one.from = splitDateTime(part[5], "yyyy/mm/dd hour:min");
+    new_one.to = splitDateTime(part[6], "yyyy/mm/dd hour:min");
     new_one.type = part[7];
-    new_one.sick_leave = part[8];
-    new_one.etc_leave = part[9];
+    new_one.sick_leave = splitPeriod(part[8]);
+    new_one.etc_leave = splitPeriod(part[9]);
     new_one.approver = part[10];
 }
 
@@ -99,10 +121,10 @@ void add_excption(string buf)
     new_one.department = part[2];
     new_one.id_number = part[3];
     new_one.name = part[4];
-    new_one.excp_date = part[5];
+    new_one.excp_date = splitDateTime(part[5], "yyyy-mm-dd weeknum");
     new_one.status = part[6];
-    new_one.on_time = part[7];
-    new_one.off_time = part[8];
+    new_one.on_time = splitDateTime(part[7], "hour:min");
+    new_one.off_time = splitDateTime(part[8], "hour:min");
     new_one.comment = part[9];
 }
 
@@ -112,9 +134,9 @@ int main(int argc, char *argv[])
     
     while (!fin.eof())
     {
-        string vacation_buf;
-        getline(fin, vacation_buf);
-        add_vacation(vacation_buf);
+        string buf;
+        getline(fin, buf);
+        add_vacation(buf);
     }
     
     fin.close();
@@ -123,9 +145,9 @@ int main(int argc, char *argv[])
     
     while (!fin.eof())
     {
-        string vacation_buf;
-        getline(fin, vacation_buf);
-        add_excption(vacation_buf);
+        string buf;
+        getline(fin, buf);
+        add_excption(buf);
     }
     
     fin.close();
