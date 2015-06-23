@@ -51,8 +51,7 @@ void splitBuf(string buf, vector<string> &part)
 
     part.push_back(buf);
     
-    for (int i = 0; i < part.size(); i++)
-        cout << i << "\"" << part[i] << "\"" << endl;
+    for (int i = 0; i < part.size(); i++) cout << i << "\"" << part[i] << "\"" << endl;
 }
 
 void add_vacation(string buf)
@@ -76,10 +75,29 @@ void add_vacation(string buf)
     new_one.approver = part[10];
 }
 
+void add_excption(string buf)
+{
+    if (buf.length() < 1) return;
+    
+    excption_record new_one;
+    vector<string> part;
+    part.push_back("---");
+    splitBuf(buf, part);
+    
+    new_one.company = part[1];
+    new_one.department = part[2];
+    new_one.id_number = part[3];
+    new_one.name = part[4];
+    new_one.excp_date = part[5];
+    new_one.status = part[6];
+    new_one.on_time = part[7];
+    new_one.off_time = part[8];
+    new_one.comment = part[9];
+}
+
 int main(int argc, char *argv[])
 {
     fin.open("qingjia_utf8.csv");
-    fout.open("result.csv");
     
     while (!fin.eof())
     {
@@ -89,6 +107,20 @@ int main(int argc, char *argv[])
     }
     
     fin.close();
+
+    fin.open("yichang_utf8.csv");
+    
+    while (!fin.eof())
+    {
+        string vacation_buf;
+        getline(fin, vacation_buf);
+        add_excption(vacation_buf);
+    }
+    
+    fin.close();
+
+
+    fout.open("result.csv");
     fout.close();
     return 0;
 }
