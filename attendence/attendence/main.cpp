@@ -87,30 +87,31 @@ date_time splitDateTime(string buf, string pattern)
     return rtn;
 }
 
-void add_vacation(string buf)
+void read_vacation(string buf)
 {
     if (buf.length() < 1) return;
     
     vacation_record new_one;
     vector<string> part;
-    part.push_back("---");
-    splitBuf(buf, part);
+
+// 读请假表    part.push_back("---");
+
     
     new_one.department = part[1];
     new_one.name = part[2];
     new_one.apply_time = splitDateTime(part[3], "yyyy/mm/dd hour:min");
     new_one.period = splitPeriod(part[4]);
-    new_one.from = splitDateTime(part[5], "yyyy/mm/dd hour:min");
-    new_one.to = splitDateTime(part[6], "yyyy/mm/dd hour:min");
+    new_one.from = splitDateTime(part[5], "yyyy/mm/dd hour:min");new_one.to = splitDateTime(part[6], "yyyy/mm/dd hour:min");
     new_one.type = part[7];
-    new_one.sick_leave = splitPeriod(part[8]);
-    new_one.etc_leave = splitPeriod(part[9]);
+    new_on
+        // 读异常表e.sick_leave = splitPeriod(part[8]);
+_one.etc_leave = splitPeriod(part[9]);
     new_one.approver = part[10];
 }
 
-void add_excption(string buf)
+void read_excption(string buf)
 {
-    if (buf.length() < 1) return;
+    if length() < 1) return;
     
     excption_record new_one;
     vector<string> part;
@@ -130,29 +131,27 @@ void add_excption(string buf)
 
 int main(int argc, char *argv[])
 {
+    // 读请假表
     fin.open("qingjia_utf8.csv");
-    
     while (!fin.eof())
     {
         string buf;
         getline(fin, buf);
-        add_vacation(buf);
+        read_vacation(buf);
     }
-    
     fin.close();
 
+    // 读异常表
     fin.open("yichang_utf8.csv");
-    
     while (!fin.eof())
     {
         string buf;
         getline(fin, buf);
-        add_excption(buf);
+        read_excption(buf);
     }
-    
     fin.close();
 
-
+    // 生成结果
     fout.open("result.csv");
     fout.close();
     return 0;
